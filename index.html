@@ -5,23 +5,74 @@
   <body onload="flashMessage()">
     <a-scene>
       <script>
-        function getBitcoinPrice() {
-          return fetch('https://api.coindesk.com/v1/bpi/currentprice.json')
-            .then(response => response.json())
-            .then(data => 
-              {
-                console.log(data);
-                return data.bpi.USD.rate
-              });
+        // Fetch top 10 crypto currencies prices and volumes
+        function getPrices() {
+          fetch('https://api.coinmarketcap.com/v1/ticker/?limit=10')
+            .then(function(response) {
+              return response.json();
+            })
+            .then(function(data) {
+              // Loop through the data and create a new A-Frame entity for each
+              for (var i = 0; i < data.length; i++) {
+                // Create a new entity
+                var entity = document.createElement('a-entity');
+                // Set the entity's position
+                entity.setAttribute('position', {
+                  x: i * 2,
+                  y: 0,
+                  z: -5
+                });
+                // Set the entity's color
+                entity.setAttribute('material', {
+                  color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+                });
+                // Set the entity's text
+                entity.setAttribute('text', {
+                  value: data[i].name + ': ' + data[i].price_usd + ' USD'
+                });
+                // Add the entity to the scene
+                document.querySelector('a-scene').appendChild(entity);
+              }
+            });
         }
+        // Flash a message when the page loads
         function flashMessage() {
-          getBitcoinPrice().then(price => {
-            var sceneEl = document.querySelector('a-scene');
-            console.log(sceneEl.querySelector('#bitcoin-price'));
-            let priceText = `BTC Price: ${price}`;
-            sceneEl.querySelector('#bitcoin-price').setAttribute('text', {value: priceText}); 
+          var message = document.createElement('a-entity');
+          message.setAttribute('position', {
+            x: 0,
+            y: 0,
+            z: -5
           });
+          message.setAttribute('text', {
+            value: 'Loading...'
+          });
+          document.querySelector('a-scene').appendChild(message);
+          setTimeout(function() {
+            message.setAttribute('text', {
+              value: 'Loaded!'
+            });
+          }, 1000);
         }
+        // Get the prices when the page loads
+        getPrices();
+       
+        // function getBitcoinPrice() {
+        //   return fetch('https://api.coindesk.com/v1/bpi/currentprice.json')
+        //     .then(response => response.json())
+        //     .then(data => 
+        //       {
+        //         console.log(data);
+        //         return data.bpi.USD.rate
+        //       });
+        // }
+        // function flashMessage() {
+        //   getBitcoinPrice().then(price => {
+        //     var sceneEl = document.querySelector('a-scene');
+        //     console.log(sceneEl.querySelector('#bitcoin-price'));
+        //     let priceText = `BTC Price: ${price}`;
+        //     sceneEl.querySelector('#bitcoin-price').setAttribute('text', {value: priceText}); 
+        //   });
+        // }
       </script>
       
       <a-entity id="bitcoin-price" position="0.8 1.3 -1" text="value: Bitcoin price; color: #4CC3D9; width: 4; height: 4"></a-entity>
