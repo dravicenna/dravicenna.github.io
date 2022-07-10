@@ -15,14 +15,12 @@
               });
         }
         function flashMessage() {
-          if ("{{ flash_message }}" == "True") {
-            getBitcoinPrice().then(price => {
-              var sceneEl = document.querySelector('a-scene');
-              console.log(sceneEl.querySelector('#bitcoin-price'));
-              let priceText = `BTC Price: ${price}`;
-              sceneEl.querySelector('#bitcoin-price').setAttribute('text', {value: priceText}); 
-            });
-          }
+          getBitcoinPrice().then(price => {
+            var sceneEl = document.querySelector('a-scene');
+            console.log(sceneEl.querySelector('#bitcoin-price'));
+            let priceText = `BTC Price: ${price}`;
+            sceneEl.querySelector('#bitcoin-price').setAttribute('text', {value: priceText}); 
+          });
         }
       </script>
       
